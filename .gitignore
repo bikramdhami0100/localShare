@@ -1,0 +1,11 @@
+node_modules
+.next
+.env
+.env.local
+storage/shared-files/*
+!storage/shared-files/.gitkeep
+*.db
+*.db-shm
+*.db-wal
+queries
+artifacts

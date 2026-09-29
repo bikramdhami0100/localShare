@@ -1,0 +1,6 @@
+
+> local-share@1.0.0 start
+> NODE_ENV=production node server.mjs
+
+[localShare] Shared space running at http://0.0.0.0:3000
+[localShare] WebSocket at ws://0.0.0.0:3000/ws

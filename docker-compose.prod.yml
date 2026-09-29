@@ -1,0 +1,66 @@
+# Production deployment: Postgres + app + Caddy (auto-HTTPS).
+# Usage:
+#   cp .env.prod.example .env.prod   # set DOMAIN, POSTGRES_PASSWORD
+#   docker compose -f docker-compose.prod.yml up -d --build --wait
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: localshare
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: localshare
+    volumes:
+      - localshare_pgdata:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U localshare -d localshare"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+    # NOTE: Postgres is NOT exposed to the outside. Only the app can reach it.
+
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATABASE_URL: postgresql://localshare:${POSTGRES_PASSWORD}@postgres:5432/localshare
+      STORAGE_DIR: /data/files
+      MAX_UPLOAD_BYTES: 2147483648
+    volumes:
+      - localshare_files:/data/files
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal]
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks: [internal]
+
+networks:
+  internal:
+
+volumes:
+  localshare_pgdata:
+  localshare_files:
+  caddy_data:
+  caddy_config:

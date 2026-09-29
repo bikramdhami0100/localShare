@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+
+    --background: #fcfcfc;
+    --foreground: #222630;
+    --card: #ffffff;
+    --card-foreground: #222630;
+    --popover: #ffffff;
+    --popover-foreground: #222630;
+    --primary: #e9585d;
+    --primary-foreground: #ffffff;
+    --secondary: #f3f4f6;
+    --secondary-foreground: #222630;
+    --muted: #f3f4f6;
+    --muted-foreground: #455263;
+    --accent: #ebecf0;
+    --accent-foreground: #222630;
+    --destructive: #dc2828;
+    --destructive-foreground: #fafafa;
+    --border: #e5e7eb;
+    --input: #e5e7eb;
+    --ring: #e9585d;
+  }
+
+  .dark {
+    --background: #191c24;
+    --foreground: #ebedef;
+    --card: #20242c;
+    --card-foreground: #ebedef;
+    --popover: #20242c;
+    --popover-foreground: #ebedef;
+    --primary: #e9585d;
+    --primary-foreground: #ffffff;
+    --secondary: #2c323a;
+    --secondary-foreground: #ebedef;
+    --muted: #2c323a;
+    --muted-foreground: #929caa;
+    --accent: #303740;
+    --accent-foreground: #ebedef;
+    --destructive: #dc2828;
+    --destructive-foreground: #fafafa;
+    --border: #303740;
+    --input: #303740;
+    --ring: #dd3c41;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Logo wordmark — Space Grotesk, like Simple.Savr */
+  .logo-wm {
+    font-family: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  /* ssavr-style autosave indicator */
+  .save-ind {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .save-ind.size-sm svg {
+    width: 16px;
+    height: 16px;
+  }
+  .save-ind.size-lg svg {
+    width: 20px;
+    height: 20px;
+  }
+  .save-halo {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--primary) 20%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 14%, transparent);
+    animation: save-pulse 2.6s ease-in-out infinite;
+  }
+  .size-sm .save-halo {
+    width: 9px;
+    height: 9px;
+  }
+  .size-lg .save-halo {
+    width: 13px;
+    height: 13px;
+  }
+  .save-orbit,
+  .save-ind svg {
+    position: relative;
+    z-index: 1;
+  }
+  .save-track {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 2;
+  }
+  .save-arc {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 26 80;
+    transform-origin: center;
+  }
+  .save-tick {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .save-cross {
+    fill: none;
+    stroke: var(--destructive);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+  }
+  .save-spin {
+    animation: save-rotate 1s linear infinite;
+    transform-origin: center;
+  }
+  @keyframes save-pulse {
+    0%,
+    100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.4);
+    }
+  }
+  @keyframes save-rotate {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* blinking caret for the "typing line" */
+  .typing-caret {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    background: var(--primary);
+    animation: caret-blink 1.1s step-end infinite;
+    vertical-align: -0.12em;
+  }
+  @keyframes caret-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
